@@ -54,7 +54,7 @@ table td:first-child{
     color: white;
     border: white;
     cursor: pointer;
-    font-size: large;
+    font-size:x-large;
     transition: 0.3s;
 }
 
