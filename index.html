@@ -13,13 +13,12 @@
             <br>
             <div class="tab-menu">
                 <table class="tab-table">
-                    <td><button class="tab-buttons" onclick='loadPage("./aboutMe.html")'>About me</button></td>
-                    <td><button class="tab-buttons" onclick='loadPage("./Blogs.html")'>Blogs</button></td>
+                    <td><button class="tab-buttons" onclick='loadPage("./pages/","./aboutMe.html")'>About me</button></td>
+                    <td><button class="tab-buttons" onclick='loadPage("./pages/","./Blogs.html")'>Blogs</button></td>
                 </table>
-                
             </div>
             <br>
-            <base href="./pages/">
+            <base id="basePagerContainer">
                 <div id="pageToLoad"></div>
             </base>
             <br>
