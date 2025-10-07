@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+        
+
+        <title>WK Website</title>
+    </head>
+    <body>
+        <div class="main">
+            <h1 style="text-align: center; font-size: 200%;">Wiktor Kaminski Website</h1>
+            <br>
+            <div class="tab-menu">
+                <table class="tab-table">
+                    <td><button class="tab-buttons" onclick='loadPage("./aboutMe.html")'>About me</button></td>
+                    <td><button class="tab-buttons" onclick='loadPage("./Blogs.html")'>Blogs</button></td>
+                </table>
+                
+            </div>
+            <br>
+            <base href="./pages/">
+                <div id="pageToLoad"></div>
+            </base>
+            <br>
+        </div>
+    </body>
+</html> 
