@@ -7,6 +7,13 @@ async function loadPage(basepath,page){
         container.innerHTML = await response.text();;
     }
     baseContainer.href = basepath;
+    scriptContainer = document.getElementById('scriptToLoad');
+    if (basepath == "./pages/blogs/"){
+        scriptContainer.innerHTML = "<script src='blogScript.js'></script>";
+    }
+    else {
+        scriptContainer.innerHTML = "";
+    }
 }
 
 document.addEventListener('DOMContentLoaded',() => {loadPage("./pages/","aboutMe.html")})
