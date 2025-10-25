@@ -19,15 +19,6 @@
             "Time": "6/29/2011 4:52:48 PM UTC"
         },
         {
-            "Title": "Test Test 3",
-            "Situation": "<p>Testing if the editor works</p>",
-            "Task": "<p>~~I hope it works~~</p>",
-            "Action": "<p>Bla bla</p>",
-            "Result": "",
-            "Extra": "<h2>Extra</h2>",
-            "Time": "10/25/2015 10:45:07 PM UTC"
-        },
-        {
             "Title": "Test 4",
             "Situation": "<p><em>Star</em></p>",
             "Task": "<p><strong>D Underscore</strong></p>",

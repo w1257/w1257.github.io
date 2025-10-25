@@ -142,7 +142,7 @@ def addPost(jsonData:dict[str,object]):
             #And save
 
 def displayPostData(jsonData:dict[str,object]):
-    print("#############")
+    print("\n#############")
     print(f"Title: {jsonData["Title"]}\n\n\
 Situation:\n    {jsonData["Situation"]}\n\n\
 Task:\n    {jsonData["Task"]}\n\n\
@@ -220,9 +220,23 @@ def editPostMenu(jsonData:dict[str,object],inMarkdown:bool = False) -> bool:
 def editPost(jsonData:dict[str,object]):
     pass
 
-def deletePost(jsonData:dict[str,object]):
-    pass
+def SelectPost(jsonData:dict[str,object]) -> int:
+    options:list[str] = ["Cancel"]
+    options.extend(list([f"{i}) "+jsonData["posts"][i]["Title"] for i in range(len(jsonData["posts"])-1,-1,-1)])) # type: ignore
+    PostSelectedVal = questionary.Question = questionary.select("Select post",options).ask()
+    if PostSelectedVal == "Cancel":
+        return -1
+    return options.index(PostSelectedVal)
 
+def deletePost(jsonData:dict[str,object]):
+    postIndex = SelectPost(jsonData)
+    if postIndex == -1:
+        return
+    displayPostData(jsonData["posts"][postIndex]) # type: ignore
+    deleteChoice:str = questionary.select("Select post",["Exit","Delete"]).ask()
+    if deleteChoice == "Delete":
+        jsonData["posts"].pop(postIndex) # type: ignore
+        
 def main():
     tempFolderPrep()
     retPath:list[Path] = [Path()]
