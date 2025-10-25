@@ -35,11 +35,11 @@ async function blogLoad() {
     //return;
     
     blogContainer.innerHTML = "";
-    for (let i = 0; i < blogData["posts"].length ; i++) {
+    for (let i = blogData["posts"].length-1; i >= 0 ; i--) {
         //const element = array[index];
         //blogContainer.innerHTML = blogData["posts"][i]["Title"];
         let localTime = new Date(blogData["posts"][i]["Time"]);
-        blogContainer.innerHTML = blogContainer.innerHTML + format(blogTemplate,blogData["posts"][i]["Title"],blogData["posts"][i]["Situation"],blogData["posts"][i]["Task"],blogData["posts"][i]["Action"],blogData["posts"][i]["Result"],blogData["posts"][i]["Extra"],localTime.toString(),blogData["posts"].length-i,nameContainer.innerHTML);
+        blogContainer.innerHTML = blogContainer.innerHTML + format(blogTemplate,blogData["posts"][i]["Title"],blogData["posts"][i]["Situation"],blogData["posts"][i]["Task"],blogData["posts"][i]["Action"],blogData["posts"][i]["Result"],blogData["posts"][i]["Extra"],localTime.toString(),i+1,nameContainer.innerHTML);
     }
 
 }
