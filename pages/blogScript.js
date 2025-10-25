@@ -4,13 +4,13 @@ const blogTemplate = '\
     <p style="color: #777; left: 4mm; font-size: small;">{8} #{7}</p>\
         <h1>{0}</h1>\
         <h2>Situation</h2>\
-        <p>{1}</p>\
+        {1}\
         <h2>Task</h2>\
-        <p>{2}</p>\
+        {2}\
         <h2>Action</h2>\
-        <p>{3}</p>\
+        {3}\
         <h2>Result</h2>\
-        <p>{4}</p>\
+        {4}\
         <div>{5}</div>\
         <p style="text-align: right; color: #777; right: 4mm; font-size: small;">{6}</p>\
     </div>'
