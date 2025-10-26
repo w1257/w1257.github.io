@@ -139,7 +139,7 @@ def addPost(jsonData:dict[str,object]):
         except OSError as e:
             print(f"Error removing temporary file {ActiveEditTempFile}: {e}")
     if (complete):
-        refJsonPost = [jsonPost]
+        refJsonPost = [jsonPost] # type: ignore
         if editPostMenu(refJsonPost, inMarkdown=True): # type: ignore
             jsonData["posts"].append(jsonPost) # type: ignore
 
