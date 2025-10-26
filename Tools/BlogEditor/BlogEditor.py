@@ -38,7 +38,7 @@ json_schema:dict[str,object] = {
 }
 
 regexEditFileFormat:re.Pattern[str] = re.compile(r"::Situation::\s*([\s\S]*?)\s*::Task::\s*([\s\S]*?)\s*::Action::\s*([\s\S]*?)\s*::Result::\s*([\s\S]*?)\s*::Extra::\s*([\s\S]*?)\s*$")
-editFileTemplate:str = "::Situation::\n\n\n\n::Task::\n\n\n\n::Action::\n\n\n\n::Result::\n\n\n\n::Extra::\n\n"
+editFileTemplate:str = "::Situation::\n\n\n\n::Task::\n\n\n\n::Action::\n\n\n\n::Result::\n\n\n\n::Extra::\n\n\n"
 tempEditFilePath:Path = Path("./temp")
 
 time_format = '%m/%d/%Y %I:%M:%S %p %Z'
@@ -137,9 +137,9 @@ def addPost(jsonData:dict[str,object]):
         except OSError as e:
             print(f"Error removing temporary file {ActiveEditTempFile}: {e}")
     if (complete):
-        if editPostMenu(jsonPost, inMarkdown=True): # type: ignore
+        refJsonPost = [jsonPost]
+        if editPostMenu(refJsonPost, inMarkdown=True): # type: ignore
             jsonData["posts"].append(jsonPost) # type: ignore
-            #And save
 
 def displayPostData(jsonData:dict[str,object]):
     print("\n#############")
@@ -162,21 +162,21 @@ def markdownToHTML(jsonData:dict[str,object]):
     if jsonData["Extra"] != "":
         jsonData["Extra"] = "<h2>Extra</h2>"+markdown.markdown(jsonData["Extra"]) # type: ignore
 
-def editInEditor(jsonData:dict[str,object],inMarkdown:bool=False):
+def editInEditor(jsonData:list[dict[str,object]],inMarkdown:bool=False):
     if inMarkdown:
         suffix_fileType = ".md"
     else:
         suffix_fileType = ".html"
-    with tempfile.NamedTemporaryFile(mode='w+',prefix=(jsonData["Title"]+"_"), suffix=suffix_fileType,dir=tempEditFilePath, delete=False, encoding='utf-8') as tfile: # type: ignore
+    with tempfile.NamedTemporaryFile(mode='w+',prefix=(jsonData[0]["Title"]+"_"), suffix=suffix_fileType,dir=tempEditFilePath, delete=False, encoding='utf-8') as tfile: # type: ignore
         ActiveEditTempFile:Path = tempEditFilePath.joinpath(tfile.name)
         for i in ["Situation","Task","Action","Result","Extra"]:
-            tfile.write(f"::{i}::\n\n{jsonData[i]}\n\n")
+            tfile.write(f"::{i}::\n\n{jsonData[0][i]}\n\n")
     try:
         while (True):
             print("\nOpening post file in nvim and waiting for exit...")
             subprocess.call(['nvim', ActiveEditTempFile])
-            jsonData = fileToPost(ActiveEditTempFile,jsonData["Title"]) # type: ignore
-            if len(jsonData) == 0:
+            jsonData[0] = fileToPost(ActiveEditTempFile,jsonData[0]["Title"]) # type: ignore
+            if len(jsonData[0]) == 0:
                 print("ERROR: post file incorrecly formatted. Please fix the formatting")
             else:
                 break
@@ -188,13 +188,13 @@ def editInEditor(jsonData:dict[str,object],inMarkdown:bool=False):
         except OSError as e:
             print(f"Error removing temporary file {ActiveEditTempFile}: {e}")
 
-def editPostMenu(jsonData:dict[str,object],inMarkdown:bool = False) -> bool:
+def editPostMenu(jsonData:list[dict[str,object]],inMarkdown:bool = False) -> bool:
     EditMenu:questionary.Question = questionary.select(
         "Select operation to do:",
         choices=["Edit","change Time","Change Title","Apply and Exit","Cancel"]
     )
     while True:
-        displayPostData(jsonData) # type: ignore
+        displayPostData(jsonData[0]) # type: ignore
         if inMarkdown:
             print("Post is still in Markdown.\n")
         else:
@@ -203,13 +203,13 @@ def editPostMenu(jsonData:dict[str,object],inMarkdown:bool = False) -> bool:
             case "Edit":
                 editInEditor(jsonData,inMarkdown)
             case "change Time":
-                print(f"current time: {jsonData["Time"]}")
-                jsonData["Time"] = input("Set new time: ")
+                print(f"current time: {jsonData[0]["Time"]}")
+                jsonData[0]["Time"] = input("Set new time: ")
             case "Change Title":
                 jsonData["Title"] = input("Enter new title: ") # type: ignore
             case "Apply and Exit":
                 if inMarkdown:
-                    markdownToHTML(jsonData)
+                    markdownToHTML(jsonData[0])
                 return True
             case "Cancel":
                 if input("type 'Cancel' to comfirm cancel: ") == 'Cancel':
@@ -217,19 +217,24 @@ def editPostMenu(jsonData:dict[str,object],inMarkdown:bool = False) -> bool:
             case _:
                 ValueError("This should not be possible. #2")
 
-def editPost(jsonData:dict[str,object]):
-    pass
-
 def SelectPost(jsonData:dict[str,object]) -> int:
     options:list[str] = ["Cancel"]
-    options.extend(list([f"{i}) "+jsonData["posts"][i]["Title"] for i in range(len(jsonData["posts"])-1,-1,-1)])) # type: ignore
+    options.extend(list([f"{i+1}) "+jsonData["posts"][i]["Title"] for i in range(len(jsonData["posts"])-1,-1,-1)])) # type: ignore
     PostSelectedVal = questionary.Question = questionary.select("Select post",options).ask()
+
+    #print(f"options: {options[1:]}\n{PostSelectedVal}: {options[1:].index(PostSelectedVal)}")
     if PostSelectedVal == "Cancel":
         return -1
-    return options.index(PostSelectedVal)
+    return options[:0:-1].index(PostSelectedVal)
+
+def editPost(jsonData:dict[str,object]):
+    postSelected = SelectPost(jsonData) # type: ignore
+    refJsonPost = [jsonData["posts"][postSelected]]# type: ignore
+    editPostMenu(refJsonPost) # type: ignore
 
 def deletePost(jsonData:dict[str,object]):
-    postIndex = SelectPost(jsonData)
+    postIndex:int = SelectPost(jsonData)
+    #print(f"postIndex: {postIndex}\njson: {jsonData["posts"]}")
     if postIndex == -1:
         return
     displayPostData(jsonData["posts"][postIndex]) # type: ignore
@@ -268,7 +273,7 @@ def main():
                         ValueError("This should not be possible. #1")
             if (SaveFile):
                 with open(retPath[0], 'w') as f:
-                    json.dump(jsonData[0], f, indent=4)
+                    json.dump(jsonData[0], f, indent=2)
             
 
 if __name__ == "__main__":
