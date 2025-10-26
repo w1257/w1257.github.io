@@ -1,3 +1,13 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "Title": "Project Start",
+      "Situation": "<p>I have decided to make LLM agent grid-based 2D game in Axmol the Game engine. LLM would run externally via OpenAI API. There was few questions about axmol.</p>\n<p>Was Axmol a outdated dead game engine?</p>\n<p>Why Axmol?</p>\n<p>Will Axmol be able to connect with LLM backend?</p>",
+      "Task": "<p>Check if the game engine was still actively worked on. Show my reason about the choice. Create proof of concept for LLM Backend communication in Axmol.</p>",
+      "Action": "<p>Check Axmol github for updates.</p>\n<p>Make a short presentation on why I choose Axmol for this game project.</p>\n<p>Get user input, send API request to LLM backend and display the response to screen in Axmol.</p>",
+      "Result": "<p>Axmol dev branch is updated very frequently.</p>\n<p>I have created a short presentation on why I choose Axmol for this project.</p>\n<p>Created proof of concept in Axmol for LLM connection via API and used Koboldcpp as backend. Axmol has dedicated module for http requests which meet all of my requierments.</p>",
+      "Extra": "",
+      "Time": "10/17/2025 07:20:08 PM UTC"
+    }
+  ]
 }
