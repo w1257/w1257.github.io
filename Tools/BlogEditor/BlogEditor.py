@@ -1,3 +1,5 @@
+import os
+import sys
 from datetime import datetime, timezone
 import subprocess
 import questionary
@@ -204,9 +206,9 @@ def editPostMenu(jsonData:list[dict[str,object]],inMarkdown:bool = False) -> boo
                 editInEditor(jsonData,inMarkdown)
             case "change Time":
                 print(f"current time: {jsonData[0]["Time"]}")
-                jsonData[0]["Time"] = input("Set new time: ")
+                jsonData[0]["Time"] = input("Set new time: ") # TODO add verification
             case "Change Title":
-                jsonData["Title"] = input("Enter new title: ") # type: ignore
+                jsonData[0]["Title"] = input("Enter new title: ") # type: ignore
             case "Apply and Exit":
                 if inMarkdown:
                     markdownToHTML(jsonData[0])
@@ -227,10 +229,11 @@ def SelectPost(jsonData:dict[str,object]) -> int:
         return -1
     return options[:0:-1].index(PostSelectedVal)
 
-def editPost(jsonData:dict[str,object]):
-    postSelected = SelectPost(jsonData) # type: ignore
-    refJsonPost = [jsonData["posts"][postSelected]]# type: ignore
-    editPostMenu(refJsonPost) # type: ignore
+def editPost(jsonData:list[dict[str,object]]):
+    postSelected = SelectPost(jsonData[0]) # type: ignore
+    refJsonPost = [jsonData[0]["posts"][postSelected]]# type: ignore
+    if editPostMenu(refJsonPost): # type: ignore
+        jsonData[0]["posts"][postSelected] = refJsonPost[0] # type: ignore
 
 def deletePost(jsonData:dict[str,object]):
     postIndex:int = SelectPost(jsonData)
@@ -242,7 +245,12 @@ def deletePost(jsonData:dict[str,object]):
     if deleteChoice == "Delete":
         jsonData["posts"].pop(postIndex) # type: ignore
         
+def ensurePath():
+    scriptDirectory = Path(sys.argv[0]).resolve().parent
+    os.chdir(scriptDirectory)
+
 def main():
+    ensurePath()
     tempFolderPrep()
     retPath:list[Path] = [Path()]
     jsonData:list[dict[str,object]] = [{}]
@@ -260,7 +268,7 @@ def main():
                     case "Add Post":
                         addPost(jsonData[0])
                     case "Edit Post":
-                        editPost(jsonData[0])
+                        editPost(jsonData)
                     case "Delete Post":
                         deletePost(jsonData[0])
                     case "Return With Saving":
