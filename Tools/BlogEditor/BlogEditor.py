@@ -231,6 +231,8 @@ def SelectPost(jsonData:dict[str,object]) -> int:
 
 def editPost(jsonData:list[dict[str,object]]):
     postSelected = SelectPost(jsonData[0]) # type: ignore
+    if postSelected == -1:
+        return
     refJsonPost = [jsonData[0]["posts"][postSelected]]# type: ignore
     if editPostMenu(refJsonPost): # type: ignore
         jsonData[0]["posts"][postSelected] = refJsonPost[0] # type: ignore
